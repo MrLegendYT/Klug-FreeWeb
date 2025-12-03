@@ -45,6 +45,7 @@ export const editThemeCode = async (
     return result;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw error;
+    // Return original HTML on error so the app doesn't break
+    return currentHtml;
   }
 };
