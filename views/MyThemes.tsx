@@ -2,40 +2,22 @@ import React from 'react';
 import { useStore } from '../StoreContext';
 import { Button } from '../components/Button';
 import { ViewState } from '../types';
-import { Edit, Download, Trash2, GitFork } from 'lucide-react';
+import { Download, GitFork } from 'lucide-react';
 
 export const MyThemes: React.FC = () => {
-  const { user, themes, userThemes, selectTheme, openEditor, deleteTheme, setView } = useStore();
+  const { user, themes, userThemes, setView } = useStore();
 
-  // Logic: 
-  // 1. Get all theme IDs the user has unlocked.
-  // 2. For each ID, check if there is a 'UserTheme' (fork) that matches the originalThemeId.
-  // 3. If yes, use the UserTheme. If no, use the Global Theme.
-  
   if (!user) return <div className="p-10 text-center">Please login to view your themes.</div>;
 
   const displayItems = user.unlockedThemeIds.map(themeId => {
-      // Check for user fork
       const userFork = userThemes.find(ut => ut.originalThemeId === themeId);
       const original = themes.find(t => t.id === themeId);
       
+      // If user had a saved version, we prioritize showing it or allow downloading it
       if (userFork) {
-          return {
-              ...userFork,
-              isFork: true,
-              originalId: themeId,
-              // UserThemes have their own ID, but for navigation we often use the original ID to trigger the editor correctly
-              // However, the OpenEditor function takes an ID. 
-              // We will pass the ORIGINAL ID to openEditor, and let AIEditor resolve the fork.
-              navId: themeId 
-          };
+          return { ...userFork, isFork: true };
       } else if (original) {
-          return {
-              ...original,
-              isFork: false,
-              originalId: themeId,
-              navId: themeId
-          };
+          return { ...original, isFork: false };
       }
       return null;
   }).filter(Boolean);
@@ -72,11 +54,8 @@ export const MyThemes: React.FC = () => {
                 <p className="text-xs text-slate-500 mb-4">
                     {theme.isFork ? 'Customized Version' : 'Original Version'}
                 </p>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="primary" onClick={() => openEditor(theme.navId)}>
-                    <Edit size={16} className="mr-2" /> Editor
-                  </Button>
-                  <Button variant="secondary" onClick={() => {
+                <div className="grid grid-cols-1">
+                  <Button variant="primary" onClick={() => {
                        const blob = new Blob([theme.previewHtml], { type: 'text/html' });
                        const url = URL.createObjectURL(blob);
                        const a = document.createElement('a');
@@ -84,7 +63,7 @@ export const MyThemes: React.FC = () => {
                        a.download = `${theme.title.replace(/\s+/g, '-').toLowerCase()}.html`;
                        a.click();
                   }}>
-                    <Download size={16} className="mr-2" /> Get
+                    <Download size={16} className="mr-2" /> Download Source
                   </Button>
                 </div>
               </div>

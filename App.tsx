@@ -8,12 +8,11 @@ import { Themes } from './views/Themes';
 import { ThemeDetails } from './views/ThemeDetails';
 import { MyThemes } from './views/MyThemes';
 import { Auth } from './views/Auth';
-import { AIEditor } from './views/AIEditor';
 import { AdminDashboard } from './views/AdminDashboard';
 import { LivePreview } from './views/LivePreview';
 
 const AppContent: React.FC = () => {
-  const { currentView, selectedThemeId } = useStore();
+  const { currentView } = useStore();
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
   // Global Listener for Ctrl+6
@@ -37,7 +36,6 @@ const AppContent: React.FC = () => {
       case ViewState.MY_THEMES: return <><Navbar /><MyThemes /></>;
       case ViewState.LOGIN: return <><Navbar /><Auth mode="LOGIN" /></>;
       case ViewState.SIGNUP: return <><Navbar /><Auth mode="SIGNUP" /></>;
-      case ViewState.AI_EDITOR: return <AIEditor key={selectedThemeId} />; // No Navbar, key forces reset
       case ViewState.ADMIN_DASHBOARD: return <AdminDashboard />; // No Navbar
       case ViewState.LIVE_PREVIEW: return <LivePreview />;
       default: return <Home />;

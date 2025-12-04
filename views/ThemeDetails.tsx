@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../StoreContext';
 import { ViewState } from '../types';
 import { Button } from '../components/Button';
-import { ArrowLeft, Monitor, Download, Clock, CheckCircle, ExternalLink, Edit } from 'lucide-react';
+import { ArrowLeft, Monitor, Download, Clock, CheckCircle, ExternalLink, Unlock } from 'lucide-react';
 
 export const ThemeDetails: React.FC = () => {
-  const { themes, selectedThemeId, setView, unlockTheme, openEditor, user, currentView } = useStore();
+  const { themes, selectedThemeId, setView, unlockTheme, user } = useStore();
   const [showMeterModal, setShowMeterModal] = useState(false);
   const [meterProgress, setMeterProgress] = useState(0);
   const [isReferralMode, setIsReferralMode] = useState(false);
@@ -18,7 +18,13 @@ export const ThemeDetails: React.FC = () => {
 
   const handleAction = () => {
     if (isUnlocked) {
-      openEditor(theme.id);
+      // Logic for downloading
+      const blob = new Blob([theme.previewHtml], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${theme.title.replace(/\s+/g, '-').toLowerCase()}.html`;
+      a.click();
       return;
     }
     
@@ -46,7 +52,6 @@ export const ThemeDetails: React.FC = () => {
                 setTimeout(() => {
                     unlockTheme(theme.id);
                     setShowMeterModal(false);
-                    // Stay on page so they can click Open Editor
                 }, 1000);
             }
             return newProgress;
@@ -68,7 +73,6 @@ export const ThemeDetails: React.FC = () => {
               clearInterval(interval);
               unlockTheme(theme.id);
               setShowMeterModal(false);
-              // Stay on page
           }
       }, 500);
   };
@@ -85,7 +89,7 @@ export const ThemeDetails: React.FC = () => {
             <Monitor size={18} className="mr-2" /> Live Preview
           </Button>
           <Button variant="primary" onClick={handleAction} className={isUnlocked ? "bg-green-600 hover:bg-green-700" : ""}>
-            {isUnlocked ? <><Edit size={18} className="mr-2"/> Open AI Editor</> : 'Get For Free'}
+            {isUnlocked ? <><Download size={18} className="mr-2"/> Download Source</> : 'Get For Free'}
           </Button>
         </div>
       </div>
@@ -124,12 +128,12 @@ export const ThemeDetails: React.FC = () => {
               <ul className="list-disc pl-4 space-y-1">
                 <li>Click "Get For Free"</li>
                 <li>Complete the required number of ad views (fills)</li>
-                <li>Instantly unlock the theme for customization and download</li>
+                <li>Instantly unlock the theme for download</li>
               </ul>
             </div>
 
             <Button className={`w-full py-4 text-lg ${isUnlocked ? 'bg-green-600 hover:bg-green-700' : ''}`} onClick={handleAction}>
-              {isUnlocked ? 'Open AI Editor' : 'Start Unlocking'}
+              {isUnlocked ? 'Download Source' : 'Start Unlocking'}
             </Button>
           </div>
           

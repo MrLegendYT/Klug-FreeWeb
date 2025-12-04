@@ -32,14 +32,12 @@ interface StoreContextType {
   // Actions
   setView: (view: ViewState) => void;
   selectTheme: (id: string) => void;
-  openEditor: (id: string) => void; 
   unlockTheme: (themeId: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
   addTheme: (theme: Omit<Theme, 'id' | 'downloads'>) => Promise<void>;
   deleteTheme: (id: string) => Promise<void>;
-  saveUserTheme: (originalThemeId: string, newHtml: string) => Promise<void>;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -111,11 +109,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setView(ViewState.THEME_DETAILS);
   };
 
-  const openEditor = (id: string) => {
-    setSelectedThemeId(id);
-    setView(ViewState.AI_EDITOR);
-  };
-
   const login = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
     setView(ViewState.HOME);
@@ -163,36 +156,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     await deleteDoc(doc(db, 'themes', id));
   };
 
-  const saveUserTheme = async (originalThemeId: string, newHtml: string) => {
-    if (!user) return;
-    
-    // Check if user already has a saved version of this theme
-    const existingUserTheme = userThemes.find(ut => ut.originalThemeId === originalThemeId);
-    
-    if (existingUserTheme) {
-      // Update existing
-      const themeRef = doc(db, 'user_themes', existingUserTheme.id);
-      await updateDoc(themeRef, { 
-        previewHtml: newHtml,
-        updatedAt: new Date() 
-      });
-    } else {
-      // Create new fork
-      const originalTheme = themes.find(t => t.id === originalThemeId);
-      if (!originalTheme) throw new Error("Original theme not found");
-
-      await addDoc(collection(db, 'user_themes'), {
-        userId: user.id,
-        originalThemeId: originalThemeId,
-        title: originalTheme.title,
-        description: originalTheme.description,
-        previewHtml: newHtml,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-    }
-  };
-
   return (
     <StoreContext.Provider value={{
       themes,
@@ -203,14 +166,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       isLoading,
       setView,
       selectTheme,
-      openEditor,
       unlockTheme,
       login,
       signup,
       logout,
       addTheme,
-      deleteTheme,
-      saveUserTheme
+      deleteTheme
     }}>
       {children}
     </StoreContext.Provider>
