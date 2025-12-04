@@ -2,7 +2,7 @@ import React from 'react';
 import { useStore } from '../StoreContext';
 import { ViewState } from '../types';
 import { Button } from './Button';
-import { ShoppingBag, Layout, User as UserIcon, LogOut } from 'lucide-react';
+import { ShoppingBag, Layout, User as UserIcon, LogOut, Sparkles } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, setView, logout } = useStore();
@@ -16,10 +16,10 @@ export const Navbar: React.FC = () => {
             className="flex items-center cursor-pointer"
             onClick={() => setView(ViewState.HOME)}
           >
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-2">
-              <span className="text-white font-bold text-xl">K</span>
+            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center mr-2 shadow-sm transition-transform hover:scale-105">
+              <Sparkles className="text-white w-5 h-5" />
             </div>
-            <span className="font-bold text-xl tracking-tight text-slate-800">Klug FreeWeb</span>
+            <span className="font-bold text-xl tracking-tight text-slate-800">Klug WebSpark</span>
           </div>
 
           <div className="hidden md:flex space-x-8 items-center">

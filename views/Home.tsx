@@ -18,7 +18,7 @@ export const Home: React.FC = () => {
             <span className="text-blue-600">without spending a dime.</span>
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-10">
-            Klug FreeWeb offers premium, professional website themes unlocked by our unique community click system. Customize with AI, download instantly.
+            Klug WebSpark offers premium, professional website themes unlocked by our unique community click system. Customize with AI, download instantly.
           </p>
           <div className="flex justify-center gap-4">
             <Button size="lg" onClick={() => setView(ViewState.THEMES)}>
@@ -83,9 +83,9 @@ export const Home: React.FC = () => {
       <footer className="bg-slate-900 text-slate-400 py-12 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="mb-4">
-            <span className="font-bold text-white text-2xl">Klug FreeWeb</span>
+            <span className="font-bold text-white text-2xl">Klug WebSpark</span>
           </div>
-          <p className="mb-8">&copy; {new Date().getFullYear()} Klug FreeWeb. All rights reserved.</p>
+          <p className="mb-8">&copy; {new Date().getFullYear()} Klug WebSpark. All rights reserved.</p>
           <div className="flex justify-center space-x-6">
             <a href="#" className="hover:text-white transition-colors">Privacy</a>
             <a href="#" className="hover:text-white transition-colors">Terms</a>
